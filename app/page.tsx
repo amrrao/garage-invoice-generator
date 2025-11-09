@@ -91,7 +91,7 @@ export default function Home() {
            onClick={handleGenerateInvoice}
            disabled={!url||loading}
           >
-            {loading ? "Generating..." : "Generate Invoice"}
+            {loading ? "Generating..." : "Downlod PDF"}
           </Button>
         </div>
 
