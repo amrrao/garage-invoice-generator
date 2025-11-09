@@ -68,13 +68,13 @@ export default function Home() {
             {firetruckImages.map((img, index) => (
               <div
                 key={index}
-                className="mx-4 h-80 w-96 shrink-0 overflow-hidden rounded-lg border border-gray-200 shadow-md"
+                className="mx-4 h-[28rem] w-[32rem] shrink-0 overflow-hidden rounded-lg border border-gray-200 shadow-md"
               >
                 <Image
                   src={img}
                   alt={`Firetruck ${index + 1}`}
-                  width={384}
-                  height={320}
+                  width={512}
+                  height={448}
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -83,9 +83,9 @@ export default function Home() {
           <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-white"></div>
           <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-white"></div>
         </div>
-        <div className="flex flex-col items-center justify-center mt-12">
+        <div className="flex flex-col items-center justify-center mt-16">
           <h1 className="text-2xl font-bold">Generate Invoice</h1>
-          <input className="w-full max-w-md p-2 border border-gray-300 rounded-md mt-4" type="text" placeholder="Paste link to listing" value={url} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)} />
+          <input className="w-full max-w-md p-2 border border-gray-300 rounded-md mt-6" type="text" placeholder="Paste link to listing" value={url} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)} />
           <Button
           className="w-full max-w-md p-2 border border-gray-300 rounded-md mt-4 bg-orange-500 text-white hover:bg-orange-600"
            onClick={handleGenerateInvoice}
