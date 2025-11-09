@@ -21,14 +21,7 @@ function sanitizeText(text: string | null | undefined): string {
 }
 
 function addFooter(doc: InstanceType<typeof PDFDocument>) {
-  const footerY = doc.page.height - 50;
-  
-  doc.moveTo(50, footerY - 10)
-    .lineTo(doc.page.width - 50, footerY - 10)
-    .strokeColor(BORDER_GRAY)
-    .lineWidth(0.5)
-    .stroke();
-
+  const footerY = doc.page.height - 60;
 
   doc.fontSize(8.5)
     .font("Helvetica")
