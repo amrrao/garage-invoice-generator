@@ -34,6 +34,12 @@ function sanitizeText(text: string | null | undefined): string {
     .replace(/\u2026/g, "...")
     .replace(/[^\x00-\x7F]/g, "");
 }
+// This is random for now, later there would be a proper invoice number system
+function generateInvoiceNumber(): string {
+  const year = new Date().getFullYear();
+  const randomNum = Math.floor(Math.random() * 999999) + 1000;
+  return `INV-${year}-${randomNum.toString().padStart(6, '0')}`;
+}
 
 function addFooter(doc: InstanceType<typeof PDFDocument>) {
   const footerY = doc.page.height - 60;
@@ -63,6 +69,7 @@ export default function generateInvoice(listing: any, recipientName?: string): P
       month: "long",
       day: "numeric",
     });
+    
 
     const headerHeight = 85;
     const logoPathPng = path.join(process.cwd(), "public", "garage-logo.png");
@@ -80,15 +87,22 @@ export default function generateInvoice(listing: any, recipientName?: string): P
       }
     }
 
+    const invoiceNumber = generateInvoiceNumber();
+
     doc.fillColor("black")
       .font("Helvetica-Bold")
       .fontSize(24)
       .text("INVOICE", doc.page.width - 200, 50, { align: "right" });
 
     doc.font("Helvetica")
+      .fontSize(7)
+      .fillColor(MEDIUM_GRAY)
+      .text(`Invoice #: ${invoiceNumber}`, doc.page.width - 200, 75, { align: "right" });
+
+    doc.font("Helvetica")
       .fontSize(10)
       .fillColor(MEDIUM_GRAY)
-      .text(`Date: ${formattedDate}`, doc.page.width - 200, 80, { align: "right" });
+      .text(`Date: ${formattedDate}`, doc.page.width - 200, 85, { align: "right" });
 
     if (recipientName) {
       const billToY = headerHeight - 10;
