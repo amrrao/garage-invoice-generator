@@ -9,6 +9,21 @@ const MEDIUM_GRAY = "#424242";
 const LIGHT_GRAY = "#757575";
 const BORDER_GRAY = "#E0E0E0";
 
+
+const STATE_TAX_RATES: Record<string, number> = {
+  "AL": 0.04, "AK": 0.00, "AZ": 0.056, "AR": 0.065, "CA": 0.0725,
+  "CO": 0.029, "CT": 0.0635, "DE": 0.00, "FL": 0.06, "GA": 0.04,
+  "HI": 0.04, "ID": 0.06, "IL": 0.0625, "IN": 0.07, "IA": 0.06,
+  "KS": 0.065, "KY": 0.06, "LA": 0.0445, "ME": 0.055, "MD": 0.06,
+  "MA": 0.0625, "MI": 0.06, "MN": 0.06875, "MS": 0.07, "MO": 0.04225,
+  "MT": 0.00, "NE": 0.055, "NV": 0.0685, "NH": 0.00, "NJ": 0.06625,
+  "NM": 0.05125, "NY": 0.04, "NC": 0.0475, "ND": 0.05, "OH": 0.0575,
+  "OK": 0.045, "OR": 0.00, "PA": 0.06, "RI": 0.07, "SC": 0.06,
+  "SD": 0.045, "TN": 0.07, "TX": 0.0625, "UT": 0.061, "VT": 0.06,
+  "VA": 0.053, "WA": 0.065, "WV": 0.06, "WI": 0.05, "WY": 0.04,
+  "DC": 0.06
+};
+
 function sanitizeText(text: string | null | undefined): string {
   if (!text) return "N/A";
   return text
@@ -32,7 +47,7 @@ function addFooter(doc: InstanceType<typeof PDFDocument>) {
     });
 }
 
-export default function generateInvoice(listing: any): Promise<Buffer> {
+export default function generateInvoice(listing: any, recipientName?: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: "A4", margin: 50 });
     const chunks: Uint8Array[] = [];
@@ -41,6 +56,13 @@ export default function generateInvoice(listing: any): Promise<Buffer> {
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
     const headerHeight = 85;
     const logoPathPng = path.join(process.cwd(), "public", "garage-logo.png");
@@ -62,6 +84,23 @@ export default function generateInvoice(listing: any): Promise<Buffer> {
       .font("Helvetica-Bold")
       .fontSize(24)
       .text("INVOICE", doc.page.width - 200, 50, { align: "right" });
+
+    doc.font("Helvetica")
+      .fontSize(10)
+      .fillColor(MEDIUM_GRAY)
+      .text(`Date: ${formattedDate}`, doc.page.width - 200, 80, { align: "right" });
+
+    if (recipientName) {
+      const billToY = headerHeight - 10;
+      doc.font("Helvetica")
+        .fontSize(10)
+        .fillColor(MEDIUM_GRAY)
+        .text("Bill To:", 50, billToY);
+      doc.font("Helvetica-Bold")
+        .fontSize(11)
+        .fillColor(DARK_GRAY)
+        .text(sanitizeText(recipientName), 50, billToY + 12);
+    }
 
     const contentStartY = headerHeight + 25;
     doc.fillColor(ORANGE)
@@ -100,25 +139,99 @@ export default function generateInvoice(listing: any): Promise<Buffer> {
     doc.text(sanitizeText(listing.state), 320, y + 46);
 
     const priceY = infoBoxY + boxHeight + 12;
-    doc.rect(50, priceY, boxWidth, 35).fill(BEIGE).strokeColor(ORANGE).lineWidth(1.5).stroke();
+    const priceBoxHeight = 90;
+    doc.rect(50, priceY, boxWidth, priceBoxHeight).fill(BEIGE).strokeColor(ORANGE).lineWidth(1.5).stroke();
 
     const priceValue =
       typeof listing.price === "number" ? listing.price : parseFloat(listing.price) || 0;
 
+    const taxRate = 0;
+    const taxAmount = priceValue * taxRate;
+    const totalAmount = priceValue + taxAmount;
+
+    let currentY = priceY + 12;
+    
     doc.fillColor(ORANGE)
       .font("Helvetica-Bold")
       .fontSize(22)
-      .text(`Price: $${priceValue.toLocaleString()}`, 65, priceY + 8);
+      .text(`Price: $${priceValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 65, currentY);
 
-    const descTitleY = priceY + 50;
-    doc.font("Helvetica-Bold").fontSize(18).fillColor(ORANGE).text("Description", 50, descTitleY);
+    currentY += 25;
+        
+    const leftX = 65;
+    const rightPadding = 10;
+    const textWidth = doc.page.width - 100 - rightPadding;
+
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica")
+    .fontSize(11)
+    .text("Subtotal:", leftX, currentY);
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica-Bold")
+    .fontSize(11)
+    .text(
+      `$${priceValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      50,
+      currentY,
+      { width: textWidth, align: "right" }
+    );
+
+  currentY += 15;
+
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica")
+    .fontSize(11)
+    .text("Tax:", leftX, currentY);
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica-Bold")
+    .fontSize(11)
+    .text(
+      `$${taxAmount.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      50,
+      currentY,
+      { width: textWidth, align: "right" }
+    );
+
+  currentY += 15;
+
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica")
+    .fontSize(11)
+    .text("Total:", leftX, currentY);
+
+  doc.fillColor(DARK_GRAY)
+    .font("Helvetica-Bold")
+    .fontSize(11)
+    .text(
+      `$${totalAmount.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      50,
+      currentY,
+      { width: textWidth, align: "right" }
+    );
+
+    const descTitleY = priceY + priceBoxHeight + 12;
+    doc.font("Helvetica-Bold").fontSize(18).fillColor(ORANGE).text("Details", 50, descTitleY);
 
     const descBoxY = descTitleY + 20;
     const descBoxHeight = doc.page.height - descBoxY - 80;
 
     doc.font("Helvetica").fontSize(9.5).fillColor(DARK_GRAY);
 
-    let descText = sanitizeText(listing.description) || "No description provided.";
+    let descText = sanitizeText(listing.description) || "No details provided.";
     descText = descText
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n")

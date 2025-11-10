@@ -11,7 +11,8 @@ export default function Home() {
   const [sentEmail, setSentEmail] = useState("");
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const validateUrl = (urlString: string): boolean => {
@@ -30,9 +31,9 @@ export default function Home() {
     }
 
     setError(null);
-    setLoading(true);
+    setDownloading(true);
     try {
-      const response = await fetch(`/api/invoice?url=${encodeURIComponent(url)}`);
+      const response = await fetch(`/api/invoice?url=${encodeURIComponent(url)}&name=${encodeURIComponent(name)}`);
       if (!response.ok) {
         const errorText = await response.text();
         let errorMessage = `Error: ${response.status}`;
@@ -67,7 +68,7 @@ export default function Home() {
       console.error("Error generating invoice:", error);
       setError("Please enter a valid link");
     } finally {
-      setLoading(false);
+      setDownloading(false);
     }
   }
 
@@ -96,7 +97,7 @@ export default function Home() {
     }
 
     setError(null);
-    setLoading(true);
+    setSendingEmail(true);
     try {
       const response = await fetch("/api/email-invoice", {
         method: "POST",
@@ -141,7 +142,7 @@ export default function Home() {
       console.error("Error sending invoice email:", error);
       setError("Failed to send email. Please try again.");
     } finally {
-      setLoading(false);
+      setSendingEmail(false);
     }
   }
   const firetruckImages = [
@@ -207,16 +208,16 @@ export default function Home() {
           <Button
           className="px-5 border max-w-sm border-gray-300 rounded-md mt-4 bg-orange-500 text-white hover:bg-orange-600"
            onClick={handleDownloadInvoice}
-           disabled={!url||!name||loading}
+           disabled={!url||!name||downloading||sendingEmail}
           >
-            {loading ? "Generating..." : "Download Invoice"}
+            {downloading ? "Generating..." : "Download Invoice"}
           </Button>
           <Button
           className="px-8 border max-w-sm border-gray-300 rounded-md mt-4 bg-orange-500 text-white hover:bg-orange-600"
            onClick={handleEmailInvoice}
-           disabled={!url||!name||loading}
+           disabled={!url||!name||downloading||sendingEmail}
           >
-            {loading ? "Sending..." : "Email Invoice"}
+            {sendingEmail ? "Sending..." : "Email Invoice"}
           </Button>
           </div>
           
@@ -253,16 +254,16 @@ export default function Home() {
                 setEmail("");
                 setError(null);
               }}
-              disabled={loading}
+              disabled={sendingEmail}
             >
               Cancel
             </Button>
             <Button
               className="px-4 py-2 border border-gray-300 rounded-md bg-orange-500 text-white hover:bg-orange-600"
               onClick={handleSendEmail}
-              disabled={!email || loading}
+              disabled={!email || sendingEmail}
             >
-              {loading ? "Sending..." : "Send Invoice"}
+              {sendingEmail ? "Sending..." : "Send Invoice"}
             </Button>
           </div>
         </div>

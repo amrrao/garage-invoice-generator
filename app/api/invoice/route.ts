@@ -4,6 +4,7 @@ import generateInvoice from "@/lib/generateinvoice";
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get("url");
+    const name = searchParams.get("name");
     if (!url) {
         return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
             image: listing.imageUrls?.[0],
         };
 
-        const pdfBuffer = await generateInvoice(data);
+        const pdfBuffer = await generateInvoice(data, name || undefined);
 
         const sanitizedTitle = data.title
             .replace(/[\u2018\u2019]/g, "'")

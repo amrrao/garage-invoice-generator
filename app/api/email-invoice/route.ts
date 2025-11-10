@@ -63,7 +63,7 @@ export async function POST(request: Request) {
             image: listing.imageUrls?.[0],
         };
 
-        const pdfBuffer = await generateInvoice(data);
+        const pdfBuffer = await generateInvoice(data, name);
 
         const sanitizedTitle = data.title
             .replace(/[\u2018\u2019]/g, "'")
