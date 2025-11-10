@@ -183,7 +183,7 @@ export default function Home() {
           <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-white"></div>
           <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-white"></div>
         </div>
-        <div className="flex flex-col items-center justify-center mt-4">
+        <div className="flex flex-col items-center justify-center md:mt-4 mt-6">
           <h1 className="text-2xl font-bold">Generate Invoice</h1>
           <input 
             className={`md:w-full w-80 max-w-md p-2 border rounded-md mt-4 ${error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? 'border-red-500 text-red-600 placeholder:text-red-400' : 'border-gray-300'}`}
