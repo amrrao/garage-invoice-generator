@@ -119,14 +119,14 @@ export default function generateInvoice(listing: any, recipientName?: string): P
     doc.text(sanitizeText(listing.title), 65, y + 11, { width: 220, ellipsis: true });
 
     doc.font("Helvetica").fillColor(MEDIUM_GRAY).fontSize(10);
-    doc.text("Brand", 65, y + 35);
+    doc.text("Brand", 65, y + 36);
     doc.font("Helvetica-Bold").fillColor(DARK_GRAY).fontSize(11);
-    doc.text(sanitizeText(listing.brand), 65, y + 46, { width: 220 });
+    doc.text(sanitizeText(listing.brand), 65, y + 47, { width: 220 });
 
     doc.font("Helvetica").fillColor(MEDIUM_GRAY).fontSize(10);
-    doc.text("Year", 65, y + 60);
+    doc.text("Year", 65, y + 61);
     doc.font("Helvetica-Bold").fillColor(DARK_GRAY).fontSize(11);
-    doc.text(sanitizeText(listing.year?.toString()), 65, y + 71);
+    doc.text(sanitizeText(listing.year?.toString()), 65, y + 72);
 
     doc.font("Helvetica").fillColor(MEDIUM_GRAY).fontSize(10);
     doc.text("Category", 320, y);
@@ -134,9 +134,9 @@ export default function generateInvoice(listing: any, recipientName?: string): P
     doc.text(sanitizeText(listing.category), 320, y + 11, { width: 200, ellipsis: true });
 
     doc.font("Helvetica").fillColor(MEDIUM_GRAY).fontSize(10);
-    doc.text("State", 320, y + 35);
+    doc.text("State", 320, y + 36);
     doc.font("Helvetica-Bold").fillColor(DARK_GRAY).fontSize(11);
-    doc.text(sanitizeText(listing.state), 320, y + 46);
+    doc.text(sanitizeText(listing.state), 320, y + 47);
 
     const priceY = infoBoxY + boxHeight + 12;
     const priceBoxHeight = 90;
