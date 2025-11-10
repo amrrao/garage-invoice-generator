@@ -8,13 +8,14 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [sentEmail, setSentEmail] = useState("");
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const validateUrl = (urlString: string): boolean => {
     if (!urlString) return false;
-    // Check if URL contains "listing" and has a UUID pattern
     const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
     return urlString.includes("listing") && uuidPattern.test(urlString);
   };
@@ -130,10 +131,12 @@ export default function Home() {
       }
 
       const result = await response.json();
+      setSentEmail(email);
       setShowEmailModal(false);
       setEmail("");
       setError(null);
-      alert("Invoice sent successfully!");
+      setShowSuccessModal(true);
+      
     } catch (error) {
       console.error("Error sending invoice email:", error);
       setError("Failed to send email. Please try again.");
@@ -266,6 +269,29 @@ export default function Home() {
       </div>
     )}
 
+      {showSuccessModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-200/60">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold mb-2">Invoice Sent Successfully!</h2>
+              <Button
+                className="px-6 py-2 border border-gray-300 rounded-md bg-orange-500 text-white hover:bg-orange-600"
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setSentEmail("");
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
         
     </div>
     

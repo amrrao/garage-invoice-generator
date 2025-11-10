@@ -16,7 +16,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Validate email format
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
             return NextResponse.json(
@@ -25,7 +24,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Extract UUID from URL (same logic as invoice route)
         const uuidPattern = /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i;
         const idMatch = url.match(uuidPattern);
         const id = idMatch?.[1];
@@ -37,7 +35,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Fetch listing data (same as invoice route)
         const apiUrl = `https://garage-backend.onrender.com/listings/${id}`;
         const res = await fetch(apiUrl, { cache: "no-store" });
         
@@ -66,10 +63,8 @@ export async function POST(request: Request) {
             image: listing.imageUrls?.[0],
         };
 
-        // Generate PDF
         const pdfBuffer = await generateInvoice(data);
 
-        // Sanitize title for filename
         const sanitizedTitle = data.title
             .replace(/[\u2018\u2019]/g, "'")
             .replace(/[\u201C\u201D]/g, '"')
@@ -78,9 +73,6 @@ export async function POST(request: Request) {
             .replace(/[^a-zA-Z0-9_-]/g, "");
 
         const filename = `${sanitizedTitle}_Invoice.pdf`;
-
-        // Send email using Resend
-        // Try with verified domain first, fallback to onboarding email for testing
         const fromEmail = process.env.RESEND_FROM_EMAIL || "Contact <contact@shadowu.org>";
         
         const emailResult = await resend.emails.send({
