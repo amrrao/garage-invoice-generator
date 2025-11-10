@@ -186,7 +186,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Generate Invoice</h1>
           <input 
-            className={`md:w-full w-64 max-w-md p-2 border rounded-md mt-6 ${error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? 'border-red-500 text-red-600 placeholder:text-red-400' : 'border-gray-300'}`}
+            className={`md:w-full w-80 max-w-md p-2 border rounded-md mt-6 ${error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? 'border-red-500 text-red-600 placeholder:text-red-400' : 'border-gray-300'}`}
             type="text" 
             placeholder={error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? error : "Paste link to listing"} 
             value={url} 
@@ -198,7 +198,7 @@ export default function Home() {
             }} 
           />
           <input 
-            className="md:w-full w-64 max-w-md p-2 border border-gray-300 rounded-md mt-2" 
+            className="md:w-full w-80 max-w-md p-2 border border-gray-300 rounded-md mt-2" 
             type="text" 
             placeholder="Name of invoice recipient (required)" 
             value={name} 
