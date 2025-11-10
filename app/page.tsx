@@ -168,7 +168,7 @@ export default function Home() {
             {firetruckImages.map((img, index) => (
               <div
                 key={index}
-                className="mx-4 h-96 w-[28rem] shrink-0 overflow-hidden rounded-lg border border-gray-200 shadow-md"
+                className="mx-4 h-64 md:h-96 w-64 md:w-[28rem] shrink-0 overflow-hidden rounded-lg border border-gray-200 shadow-md"
               >
                 <Image
                   src={img}
