@@ -23,7 +23,7 @@ export default function Home() {
   async function handleDownloadInvoice() {
     if (!url || !name) return;
     
-    // Validate URL format
+
     if (!validateUrl(url)) {
       setError("Please enter a valid link");
       return;
@@ -62,7 +62,7 @@ export default function Home() {
 
       link.remove();
       URL.revokeObjectURL(fileURL);
-      setError(null); // Clear error on success
+      setError(null);
     } catch (error) {
       console.error("Error generating invoice:", error);
       setError("Please enter a valid link");
@@ -192,14 +192,14 @@ export default function Home() {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUrl(e.target.value);
               if (error && (error.includes("link") || error.includes("URL") || error.includes("listing"))) {
-                setError(null); // Clear error when user starts typing
+                setError(null);
               }
             }} 
           />
           <input 
             className="w-full max-w-md p-2 border border-gray-300 rounded-md mt-2" 
             type="text" 
-            placeholder="Name of Invoice Recipient (required)" 
+            placeholder="Name of invoice recipient (required)" 
             value={name} 
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} 
           />
