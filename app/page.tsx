@@ -155,7 +155,7 @@ export default function Home() {
   return (
     <div>
       
-      <Image className="ml-28 mt-6"
+      <Image className="ml-4 md:ml-28 mt-6"
           src="/garage-logo.svg"
           alt="Garage logo"
           width={80}
@@ -175,7 +175,7 @@ export default function Home() {
                   alt={`Firetruck ${index + 1}`}
                   width={448}
                   height={384}
-                  className="h-full w-full object-cover"
+                  className="md:h-full md:w-full w-64 h-64 object-cover"
                 />
               </div>
             ))}
@@ -186,7 +186,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Generate Invoice</h1>
           <input 
-            className={`w-full max-w-md p-2 border rounded-md mt-6 ${error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? 'border-red-500 text-red-600 placeholder:text-red-400' : 'border-gray-300'}`}
+            className={`md:w-full w-64 max-w-md p-2 border rounded-md mt-6 ${error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? 'border-red-500 text-red-600 placeholder:text-red-400' : 'border-gray-300'}`}
             type="text" 
             placeholder={error && (error.includes("link") || error.includes("URL") || error.includes("listing")) ? error : "Paste link to listing"} 
             value={url} 
@@ -198,7 +198,7 @@ export default function Home() {
             }} 
           />
           <input 
-            className="w-full max-w-md p-2 border border-gray-300 rounded-md mt-2" 
+            className="md:w-full w-64 max-w-md p-2 border border-gray-300 rounded-md mt-2" 
             type="text" 
             placeholder="Name of invoice recipient (required)" 
             value={name} 
